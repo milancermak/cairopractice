@@ -39,13 +39,13 @@ See sections below for further specific rules.
 
 ## @storage_var naming
 
-To prevent [`@storage_var` conflicts](https://github.com/crytic/amarna/issues/10) and clearly distinguish between a local variable and a storage container, a `@storage_var` should be named using the following template: `ModuleName_variable_name_storage` - that is, the variable name is prefixed by the module name and suffixed by the string `storage`, separated by underscores.
+To prevent [`@storage_var` conflicts](https://github.com/crytic/amarna/issues/10) and clearly distinguish between a local variable and a storage container, a `@storage_var` should be named using the following template: `modulename_variable_name_storage` - that is, the variable name is prefixed by the module name (lowercase, no separation) and suffixed by the string `storage`, separated by underscores.
 
 An example of a variable named `balance` inside a module called `Treasury`:
 
 ```cairo
 @storage_var
-func Treasury_balance_storage() -> (balance : felt):
+func treasury_balance_storage() -> (balance : felt):
 end
 ```
 
@@ -55,12 +55,12 @@ A `@view` function that retrieves a `@storage_var` (essentially a getter) should
 
 ```cairo
 @storage_var
-func Module_amount_storage() -> (amount : felt):
+func module_amount_storage() -> (amount : felt):
 end
 
 @view
 func get_amount{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (amount : felt):
-    let (amount : felt) = Module_amount_storage.read()
+    let (amount : felt) = module_amount_storage.read()
     return (amount)
 end
 ```
