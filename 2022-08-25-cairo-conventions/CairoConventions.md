@@ -149,3 +149,11 @@ func get_price() -> (price_wad: felt) {
 func get_price_pair() -> (current_price_wad: felt, previous_price_wad: felt) {
 }
 ```
+
+## Using mixins
+
+[Mixins](https://mirror.xyz/0xa37228277Ed21843c5F61F4Ed2928Af5Df2A81C9/Bm9YJK1mhdJPH7z3f5lY9Wu5wrL1tlUz4xaHGBPZ5oE) hold functions that can be reused in distinct smart contracts. These files must have the `_external.cairo` suffix in their name. When using mixins in a smart contract, simply import the required function using the `import` statement.
+
+```cairo
+from contracts.mixins.ownable.ownable_external import owner, transfer_ownership, renounce_ownership
+```
