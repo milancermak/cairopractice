@@ -27,13 +27,13 @@ We follow these conventions when naming things
 | thing                     | convention                  | example                                                          |
 |---------------------------|-----------------------------|------------------------------------------------------------------|
 | directories and files     | snake_case                  | `module_name/module.cairo`                                       |
-| functions                 | snake_case                  | `func open_account{...}():`                                      |
+| functions                 | snake_case                  | `func open_account{...}(){}`                                     |
 | namespaces                | PascalCase                  | `namespace Engine`                                               |
-| contract interfaces       | PascalCase prepended with I | <pre>@contract_interface<br />namespace IAccount:<br />end</pre> |
+| contract interfaces       | PascalCase prepended with I | <pre>@contract_interface<br />namespace IAccount{<br />}</pre>   |
 | structs                   | PascalCase                  | `struct Loan`                                                    |
-| variables, struct members | snake_case                  | `let user_balance = 100`                                         |
-| events                    | PascalCase                  | <pre>@event<br />func ThingHappened():<br />end</pre>            |
-| constants                 | UPPER_SNAKE_CASE            | `const CAP_AMOUNT = 10**18`                                      |
+| variables, struct members | snake_case                  | `let user_balance = 100;`                                        |
+| events                    | PascalCase                  | <pre>@event<br />func ThingHappened(){<br />}</pre>              |
+| constants                 | UPPER_SNAKE_CASE            | `const CAP_AMOUNT = 10**18;`                                     |
 
 See sections below for further specific rules.
 
@@ -45,8 +45,8 @@ An example of a variable named `balance` inside a module called `Treasury`:
 
 ```cairo
 @storage_var
-func treasury_balance_storage() -> (balance : felt):
-end
+func treasury_balance_storage() -> (balance : felt) {
+}
 ```
 
 ## Getters
@@ -55,14 +55,14 @@ A `@view` function that retrieves a `@storage_var` (essentially a getter) should
 
 ```cairo
 @storage_var
-func module_amount_storage() -> (amount : felt):
-end
+func module_amount_storage() -> (amount: felt) {
+}
 
 @view
-func get_amount{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (amount : felt):
-    let (amount : felt) = module_amount_storage.read()
-    return (amount)
-end
+func get_amount{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> (amount: felt) {
+    let (amount: felt) = module_amount_storage.read();
+    return (amount,);
+}
 ```
 
 ## Events
@@ -76,16 +76,16 @@ Prefer emitting events from `@external`, `@l1_handler` or `@constructor` functio
 When using the `with_attr error_message()` pattern to do a check and raise an error if it fails, prepend the error message itself with the module name. It makes it easier for debugging, etc. An example from the `direct_deposit` module:
 
 ```cairo
-with_attr error_message("direct_deposit: transferFrom failed"):
-    assert was_transfered = TRUE
-end
+with_attr error_message("direct_deposit: transferFrom failed") {
+    assert was_transfered = TRUE;
+}
 ```
 
 ## Address Variables
 
 Add the `_address` suffix to any variable holding an address. Unlike Solidity, Cairo doesn't yet have an address type, and so adding this suffix makes it clearer to the reader what the variable is and does.
 
-`const usdc = 0x...` becomes `const usdc_address = 0x...` and so on.
+`const usdc = 0x...;` becomes `const usdc_address = 0x...;` and so on.
 
 ## Specifying variable and function argument types
 
@@ -94,29 +94,29 @@ If a variable or function type is a felt, don't specify its type with the `: fel
 Examples of what to do:
 
 ```cairo
-func some_func(a) -> (b):
-    return (y)
-end
+func some_func(a) -> (b: felt) {
+    return (y,);
+}
 ```
 
 ```cairo
-let (output) = some_func(5)
+let (output) = some_func(5);
 ```
 
 ```cairo
-func some_second_func(a : SomeStruct) -> (b : SomeStruct):
-    return (a)
-end
+func some_second_func(a: SomeStruct) -> (b: SomeStruct) {
+    return (a);
+}
 ```
 
 ```cairo
-let (output : SomeStruct) = some_second_func(SomeStruct(4,5))
+let (output: SomeStruct) = some_second_func(SomeStruct(4,5));
 ```
 
 Example of what NOT to do:
 
 ```cairo
-let (output) = some_second_func(SomeStruct(4,5)) # <-- The type of output isn't specified
+let (output) = some_second_func(SomeStruct(4,5)); // <-- The type of output isn't specified
 ```
 
 ## Naming of return values for functions and storage variables
@@ -138,14 +138,14 @@ These names can be used as a standalone value (1), or as suffixes if you want to
 
 ```cairo
 # 1
-func get_price() -> (wad):
-end
+func get_price() -> (wad: felt) {
+}
 
 # 2
-func get_price() -> (price_wad):
-end
+func get_price() -> (price_wad: felt) {
+}
 
 # 3
-func get_price_pair() -> (current_price_wad, previous_price_wad):
-end
+func get_price_pair() -> (current_price_wad: felt, previous_price_wad: felt) {
+}
 ```
