@@ -1,8 +1,15 @@
 import pytest
 
+from starkware.starknet.testing.contract import StarknetContract
 from starkware.starkware_utils.error_handling import StarkException
 
-from utils import ADMIN
+from utils import ADMIN, compile_contract
+
+
+@pytest.fixture
+async def mixins(starknet) -> StarknetContract:
+    contract = compile_contract("contracts/mixins/main.cairo")
+    return await starknet.deploy(contract_class=contract, constructor_calldata=[ADMIN])
 
 
 @pytest.mark.asyncio
